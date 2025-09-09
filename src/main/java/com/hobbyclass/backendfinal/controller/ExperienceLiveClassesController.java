@@ -37,12 +37,15 @@ public class ExperienceLiveClassesController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Experience> updateExperience(@PathVariable Long id, @RequestBody Experience experienceDetails, @RequestParam Long mentorId) {
-        Experience updatedExperience = experienceService.updateExperience(id, experienceDetails, mentorId);
-        if (updatedExperience == null) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Experience> updateExperience(@PathVariable Long id, @RequestBody Experience experienceDetails) {
+        if (experienceDetails.getMentor() != null) {
+            Experience updatedExperience = experienceService.updateExperience(id, experienceDetails, experienceDetails.getMentor().getId());
+            if (updatedExperience == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(updatedExperience);
         }
-        return ResponseEntity.ok(updatedExperience);
+        return ResponseEntity.badRequest().build();
     }
 
     @DeleteMapping("/{id}")
