@@ -40,12 +40,15 @@ public class ExploreController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HobbyClass> updateClass(@PathVariable Long id, @RequestBody HobbyClass classDetails, @RequestParam Long mentorId) {
-        HobbyClass updatedClass = hobbyClassService.updateClass(id, classDetails, mentorId);
-        if (updatedClass == null) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<HobbyClass> updateClass(@PathVariable Long id, @RequestBody HobbyClass classDetails) {
+        if (classDetails.getMentor() != null) {
+            HobbyClass updatedClass = hobbyClassService.updateClass(id, classDetails, classDetails.getMentor().getId());
+            if (updatedClass == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(updatedClass);
         }
-        return ResponseEntity.ok(updatedClass);
+        return ResponseEntity.badRequest().build();
     }
 
     @DeleteMapping("/{id}")
